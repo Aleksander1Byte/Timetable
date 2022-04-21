@@ -9,7 +9,6 @@ from .tools.hash import generate_hash
 
 
 class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
-    PREVIEW_SIZE = (400, 600)
     __tablename__ = 'objects'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

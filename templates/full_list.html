@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<section>
+    <div class="list-group">
+        {% for obj in objects %}
+        <a href="obj/{{ obj.id }}" class="list-group-item list-group-item-action">{{ obj.name }}</a>
+        {% endfor %}
+    </div >
+</section>
+
+
+{% endblock %}

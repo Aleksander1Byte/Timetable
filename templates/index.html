@@ -34,9 +34,13 @@
                         <a class="nav-link" href="/logout">Выйти из аккаунта</a>
                     </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/list">Полный список</a>
+                    </li>
                 </ul>
                 <form class="d-flex" action="/search" method="get">
-                    <input class="form-control me-2" type="search" placeholder="Искать наследие..." aria-label="Search" name="search_query">
+                    <input class="form-control me-2" type="search" placeholder="Искать наследие..." aria-label="Search"
+                           name="search_query">
                     <button class="btn btn-outline-success" type="submit">Поиск</button>
                 </form>
             </div>

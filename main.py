@@ -1,9 +1,11 @@
 import os.path
+from functools import wraps
 
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, render_template, request
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
+from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 import requests
 
@@ -34,9 +36,19 @@ DEBUG = True
 def main():
     db_sess = create_session()
     objects = db_sess.query(Object).all()
-
     return render_template('main_page.html', title='Timetable',
                            current_user=current_user, objects=objects)
+
+
+def admin_only(func):
+    @wraps(func)
+    def check(*args, **kwargs):
+        if current_user is None:
+            abort(405)
+        if not current_user.is_admin:
+            abort(405)
+        return func(*args, **kwargs)
+    return check
 
 
 @app.route('/search', methods=['GET'])
@@ -45,6 +57,8 @@ def search():
     query = request.args.get("search_query")
     obj = db_sess.query(Object).filter(
         Object.name.like(f'%{query}%')).first()
+    if obj is None:
+        return redirect('/')
     return redirect(f'/obj/{obj.id}')
 
 
@@ -59,6 +73,28 @@ def get_admin():
         user.is_admin = True
     db_sess.commit()
     return f'Удивительно! Ваши права перевернулись на {user.is_admin}'
+
+
+@app.route('/list')
+def full_list():
+    db_sess = create_session()
+    objects = db_sess.query(Object).all()
+    context = {
+        'objects': objects
+    }
+    return render_template('full_list.html', current_user=current_user,
+                           **context)
+
+
+@app.route('/obj/delete/<int:id>', methods=['GET', 'POST'])
+@admin_only
+def delete_object(id):
+    db_sess = create_session()
+    obj = db_sess.query(Object).get(id)
+    db_sess.query(Comments).filter(Comments.post_id == obj.id).delete()
+    db_sess.delete(obj)
+    db_sess.commit()
+    return redirect('/')
 
 
 @app.route('/obj/<int:id>', methods=['GET', 'POST'])
@@ -89,8 +125,9 @@ def view_object(id):
                            **context)
 
 
-@login_required
 @app.route('/add', methods=['GET', 'POST'])
+@login_required
+@admin_only
 def add_object():
     form = nof.NewObjectForm()
     if form.validate_on_submit():
