@@ -12,7 +12,7 @@
 </center>
 {% endif %}
 <h6> Находится в {{ obj.region_id }} регионе. </h6>
-<h6> Имеет значение {{ obj.meaning.text }} масштаба. </h6>
+<h6> Имеет значение {{ obj.meaning.text.lower()[:-2] }}ого масштаба. </h6>
 <h6> Является {{ obj.type.text }}. </h6>
 {% if obj.is_unesco %}
 <h6> Находится в ЮНЕСКО.</h6>
