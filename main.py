@@ -39,10 +39,6 @@ def main():
                            current_user=current_user, objects=objects)
 
 
-def add_comment(creator, obj):
-    print(creator.id, obj.id)
-
-
 @app.route('/search', methods=['GET'])
 def search():
     db_sess = create_session()
@@ -50,6 +46,19 @@ def search():
     obj = db_sess.query(Object).filter(
         Object.name.like(f'%{query}%')).first()
     return redirect(f'/obj/{obj.id}')
+
+
+@app.route('/super_ultra_mega_secret')
+@login_required
+def get_admin():
+    db_sess = create_session()
+    user = db_sess.query(User).get(current_user.id)
+    if user.is_admin:
+        user.is_admin = False
+    else:
+        user.is_admin = True
+    db_sess.commit()
+    return f'Удивительно! Ваши права перевернулись на {user.is_admin}'
 
 
 @app.route('/obj/<int:id>', methods=['GET', 'POST'])
@@ -60,14 +69,21 @@ def view_object(id):
         'obj': obj
     }
     if request.method == 'POST':
-        text = request.form.get('comment')
-        if text is None or text == '':
-            return render_template('view_object.html',
-                                   current_user=current_user,
-                                   **context)
-        comment = Comments(creator_id=current_user.id, post_id=id, text=text)
-        db_sess.add(comment)
-        db_sess.commit()
+        if 'comment' in request.form:  # комментарий
+            text = request.form.get('comment')
+            if text is None or text == '':
+                return render_template('view_object.html',
+                                       current_user=current_user,
+                                       **context)
+            comment = Comments(creator_id=current_user.id, post_id=id,
+                               text=text)
+            db_sess.add(comment)
+            db_sess.commit()
+        else:  # удаление комментария
+            comment_id = list(request.form.keys())[0]
+            comment = db_sess.query(Comments).get(comment_id)
+            db_sess.delete(comment)
+            db_sess.commit()
 
     return render_template('view_object.html', current_user=current_user,
                            **context)

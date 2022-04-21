@@ -36,7 +36,13 @@
                 {% for comment in obj.comments %}
                 <div class="media" style="padding-bottom: 10px;">
                     <div class="media-body">
+                        {% if current_user.is_admin or current_user.id == comment.creator.id %}
+                        <form action="" method="post">
+                            <button name="{{ comment.id }}"><h4 class="text-danger media-heading user_name">{{ comment.creator.nickname }}</h4></button>
+                        </form>
+                        {% else %}
                         <h4 class="media-heading user_name">{{ comment.creator.nickname }}</h4>
+                        {% endif %}
                         {{ comment.text }}
                     </div>
                 </div>
