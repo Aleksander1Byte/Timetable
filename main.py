@@ -23,7 +23,7 @@ DEBUG = True
 
 @app.route('/')
 def main():
-    return render_template('index.html', title='Timetable',
+    return render_template('main_page.html', title='Timetable',
                            current_user=current_user)
 
 

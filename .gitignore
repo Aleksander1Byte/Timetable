@@ -1,8 +1,9 @@
 /alembic/env.py
 /alembic/script.py.mako
 /venv/
-*.mp4
+/.idea/
 *.db
-*.avi
-*.png
-*.jpg
+/static/media/vid/*.mp4
+/static/media/vid/*.avi
+/static/media/img/*.png
+/static/media/img/*.jpg
