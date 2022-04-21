@@ -17,6 +17,7 @@ from data.meaning import Type, Meaning
 from data.users import User
 import data.forms.NewObjectForm as nof
 from data.resources.objects_resources import *
+from random import shuffle
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -40,8 +41,9 @@ DEBUG = True
 def main():
     db_sess = create_session()
     objects = db_sess.query(Object).all()
+    shuffle(objects)
     return render_template('main_page.html', title='Timetable',
-                           current_user=current_user, objects=objects)
+                           current_user=current_user, objects=objects[:8])
 
 
 def admin_only(func):
@@ -133,9 +135,10 @@ def edit_object(id):
     db_sess = create_session()
     obj = db_sess.query(Object).get(id)
     form = nof.NewObjectForm()
-    form.name.data = obj.name
-    form.region_id.data = obj.region_id
-    form.description.data = obj.description
+    if request.method == 'GET':
+        form.name.data = obj.name
+        form.region_id.data = obj.region_id
+        form.description.data = obj.description
     if form.validate_on_submit():
         delete(f'http://{ADDRESS}/api/objects/{id}')
         video = request.files[

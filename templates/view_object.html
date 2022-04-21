@@ -1,7 +1,13 @@
 {% extends "index.html" %}
 
 {% block content %}
-<center><h1><a href="{{ obj.id }}/edit" class="text-info">{{ obj.name }}</a></h1></center>
+<center><h1>
+    {% if current_user.is_admin %}
+    <a href="{{ obj.id }}/edit" class="text-info">{{ obj.name }}</a>
+    {% else %}
+    {{ obj.name }}
+    {% endif %}
+</h1></center>
 <center><p><img src="../../{{ obj.picture_path }}" style="max-height: 500px;"></p></center>
 <p>{{ obj.description }}</p>
 {% if obj.video_path %}
@@ -38,7 +44,8 @@
                     <div class="media-body">
                         {% if current_user.is_admin or current_user.id == comment.creator.id %}
                         <form action="" method="post">
-                            <button name="{{ comment.id }}"><h4 class="text-danger media-heading user_name">{{ comment.creator.nickname }}</h4></button>
+                            <button name="{{ comment.id }}"><h4 class="text-danger media-heading user_name">{{
+                                comment.creator.nickname }}</h4></button>
                         </form>
                         {% else %}
                         <h4 class="media-heading user_name">{{ comment.creator.nickname }}</h4>
