@@ -26,7 +26,7 @@ class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     comments = orm.relation('Comments', back_populates='obj')
 
-    is_unesco = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
+    is_unesco = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     video_path = sqlalchemy.Column(sqlalchemy.String, nullable=True)

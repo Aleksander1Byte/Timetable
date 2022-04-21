@@ -1,22 +1,21 @@
 import os.path
 from functools import wraps
 
+from flask_restful import Api
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, render_template, request
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
-import requests
 
-from data.comments import Comments
-from data.db_session import create_session, global_init
+from data.db_session import global_init
 from data.forms.LoginForm import LoginForm
 from data.forms.RegisterForm import RegisterForm
 from data.meaning import Type, Meaning
 from data.users import User
-from data.objects import Object
 import data.forms.NewObjectForm as nof
+from data.resources.objects_resources import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -25,6 +24,10 @@ app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 5120  # 5 GB
 login_manager = LoginManager()
 login_manager.init_app(app)
 global_init('db/database.db')
+
+api = Api(app)
+api.add_resource(ObjectsListResource, '/api/objects')
+api.add_resource(ObjectsResource, '/api/objects/<int:object_id>')
 
 types = {1: 'Памятник', 2: 'Ансамбль', 3: 'Достопримечательное место'}
 meanings = {1: 'Местное', 2: 'Региональное', 3: 'Федеральное'}
