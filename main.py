@@ -2,6 +2,7 @@ import os.path
 from functools import wraps
 
 from flask_restful import Api
+from requests import delete
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, render_template, request
 from flask_login import (LoginManager, current_user, login_required,
@@ -92,11 +93,7 @@ def full_list():
 @app.route('/obj/delete/<int:id>', methods=['GET', 'POST'])
 @admin_only
 def delete_object(id):
-    db_sess = create_session()
-    obj = db_sess.query(Object).get(id)
-    db_sess.query(Comments).filter(Comments.post_id == obj.id).delete()
-    db_sess.delete(obj)
-    db_sess.commit()
+    delete(f'http://{ADDRESS}/api/objects/{id}')
     return redirect('/')
 
 
