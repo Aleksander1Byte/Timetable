@@ -17,6 +17,35 @@
 {% if obj.is_unesco %}
 <h6> Находится в ЮНЕСКО.</h6>
 {% endif %}
-<h4> Комментарии: </h4>
 
+{% if current_user.is_authenticated %}
+<h3> Комментарии: </h3>
+<form action="" method="post" style="padding-bottom: 50px;">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Оставьте комментарий</span>
+        </div>
+        <textarea class="form-control" name="comment"></textarea>
+        <button class="btn btn-outline-secondary" type="submit">Отправить</button>
+    </div>
+</form>
+<div class="container" style="padding-bottom: 50px;">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="comments-list">
+                {% for comment in obj.comments %}
+                <div class="media" style="padding-bottom: 10px;">
+                    <div class="media-body">
+                        <h4 class="media-heading user_name">{{ comment.creator.nickname }}</h4>
+                        {{ comment.text }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<h3> Авторизируйтесь для просмотра комментариев.</h3>
+{% endif %}
 {% endblock %}

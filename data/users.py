@@ -18,11 +18,10 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
-    liked_posts = sqlalchemy.Column(sqlalchemy.String, nullable=False,
-                                    default=' ')
-    disliked_posts = sqlalchemy.Column(sqlalchemy.String, nullable=False,
-                                       default=' ')
     is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+
+    comments = orm.relation('Comments', back_populates='creator')
+
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

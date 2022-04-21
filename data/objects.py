@@ -24,6 +24,9 @@ class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
                                 sqlalchemy.ForeignKey("types.id"),
                                 nullable=False)
     type = orm.relation('Type')
+
+    comments = orm.relation('Comments', back_populates='obj')
+
     is_unesco = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 

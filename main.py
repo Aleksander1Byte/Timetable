@@ -7,6 +7,7 @@ from flask_login import (LoginManager, current_user, login_required,
 from werkzeug.utils import redirect
 import requests
 
+from data.comments import Comments
 from data.db_session import create_session, global_init
 from data.forms.LoginForm import LoginForm
 from data.forms.RegisterForm import RegisterForm
@@ -38,6 +39,10 @@ def main():
                            current_user=current_user, objects=objects)
 
 
+def add_comment(creator, obj):
+    print(creator.id, obj.id)
+
+
 @app.route('/search', methods=['GET'])
 def search():
     db_sess = create_session()
@@ -47,14 +52,25 @@ def search():
     return redirect(f'/obj/{obj.id}')
 
 
-@app.route('/obj/<int:id>')
+@app.route('/obj/<int:id>', methods=['GET', 'POST'])
 def view_object(id):
     db_sess = create_session()
     obj = db_sess.query(Object).get(id)
     context = {
         'obj': obj
     }
-    return render_template('view_object.html', current_user=current_user, **context)
+    if request.method == 'POST':
+        text = request.form.get('comment')
+        if text is None or text == '':
+            return render_template('view_object.html',
+                                   current_user=current_user,
+                                   **context)
+        comment = Comments(creator_id=current_user.id, post_id=id, text=text)
+        db_sess.add(comment)
+        db_sess.commit()
+
+    return render_template('view_object.html', current_user=current_user,
+                           **context)
 
 
 @login_required
