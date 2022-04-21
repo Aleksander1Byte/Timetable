@@ -1,5 +1,6 @@
 import os.path
 
+from sqlalchemy.exc import IntegrityError
 from flask import Flask, render_template
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
@@ -8,7 +9,9 @@ from werkzeug.utils import redirect
 from data.db_session import create_session, global_init
 from data.forms.LoginForm import LoginForm
 from data.forms.RegisterForm import RegisterForm
+from data.meaning import Type, Meaning
 from data.users import User
+from data.objects import Object
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -86,7 +89,27 @@ def register():
                            current_user=current_user)
 
 
+def setup_db():
+    types = {1: 'Памятник', 2: 'Ансамбль', 3: 'Достопримечательное место'}
+    meanings = {1: 'Местное', 2: 'Региональное', 3: 'Федеральное'}
+    db_sess = create_session()
+    try:
+        for key_t in types:
+            new_type = Type(id=key_t, text=types[key_t])
+            db_sess.add(new_type)
+
+        for key_m in meanings:
+            new_meaning = Meaning(id=key_m, text=meanings[key_m])
+            db_sess.add(new_meaning)
+
+        db_sess.commit()
+    except IntegrityError:
+        print('База данных уже наполнена стандатрными значениями')
+        return
+
+
 if __name__ == '__main__':
+    setup_db()
     if DEBUG:
         PORT = 5050
         HOST = '127.0.0.1'
