@@ -4,26 +4,24 @@
 
 <section>
     <div class="container">
+        {% for obj in objects %}
+        {% if loop.index0 % 4 == 0 %}
         <div class="row">
+            {% endif %}
             <div class="col">
-                <div class="card" style="width: 18rem;">
-                    <img src="..." class="card-img-top" alt="...">
+                <div class="card" style="width: 18rem; height: 24rem;">
+                    <img src="{{ obj.picture_path }}" class="card-img-top" alt="{{ obj.name }}">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <h5 class="card-title"> {{ obj.name }}</h5>
+                        <p class="card-text">{{ obj.description|truncate(100) }}</p>
+                        <a href="#" class="btn btn-primary" style="position: absolute;bottom: 10px;">Узнать подробнее</a>
                     </div>
                 </div>
             </div>
-            <div class="col">
-                Column
-            </div>
-            <div class="col">
-                Column
-            </div>
+            {% if loop.index0 % 4 == 3 %}
         </div>
+        {% endif %}
+        {% endfor %}
     </div>
 </section>
 

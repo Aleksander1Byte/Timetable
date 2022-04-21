@@ -34,6 +34,9 @@ class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     def set_video_path(self, path):
         from main import app
+        if path.filename == '':
+            self.video_path = None
+            return
         self.video_path = os.path.join(
             app.config[
                 'UPLOAD_FOLDER']
@@ -42,6 +45,13 @@ class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     def set_picture_path(self, path):
         from main import app
+        if path.filename == '':
+            self.picture_path = os.path.join(
+                app.config[
+                    'UPLOAD_FOLDER']
+            ) + 'img/' + 'default_pic.png'
+            return
+
         self.picture_path = os.path.join(
             app.config[
                 'UPLOAD_FOLDER']

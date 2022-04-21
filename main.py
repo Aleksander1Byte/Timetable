@@ -31,8 +31,11 @@ DEBUG = True
 
 @app.route('/')
 def main():
+    db_sess = create_session()
+    objects = db_sess.query(Object).all()
+
     return render_template('main_page.html', title='Timetable',
-                           current_user=current_user)
+                           current_user=current_user, objects=objects)
 
 
 @login_required
@@ -47,7 +50,7 @@ def add_object():
         db_sess = create_session()
         obj = Object(
             name=form.name.data,
-            description=form.description.data,
+            description=form.description.data.capitalize(),
             region_id=form.region_id.data,
             meaning_id=form.meaning_id.data,
             type_id=form.type_id.data,
