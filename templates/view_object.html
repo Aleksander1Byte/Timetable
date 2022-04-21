@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+
+{% block content %}
+<center><h1> {{ obj.name }}</h1></center>
+<center><p><img src="../../{{ obj.picture_path }}" style="max-height: 500px;"></p></center>
+<p>{{ obj.description }}</p>
+{% if obj.video_path %}
+<center>
+    <video controls style="max-width: 500px;">
+        <source src="../../{{ obj.video_path }}">
+    </video>
+</center>
+{% endif %}
+<h6> Находится в {{ obj.region_id }} регионе. </h6>
+<h6> Имеет значение {{ obj.meaning.text }} масштаба. </h6>
+<h6> Является {{ obj.type.text }}. </h6>
+{% if obj.is_unesco %}
+<h6> Находится в ЮНЕСКО.</h6>
+{% endif %}
+<h4> Комментарии: </h4>
+
+{% endblock %}

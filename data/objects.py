@@ -29,8 +29,12 @@ class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     video_path = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     picture_path = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    _hash = None
 
-    __hash__ = generate_hash()
+    def __hash__(self):
+        if self._hash is None:
+            self._hash = generate_hash()
+        return self._hash
 
     def set_video_path(self, path):
         from main import app
@@ -40,7 +44,7 @@ class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
         self.video_path = os.path.join(
             app.config[
                 'UPLOAD_FOLDER']
-        ) + 'vid/' + self.__hash__ + path.filename[-4:]
+        ) + 'vid/' + self.__hash__() + path.filename[-4:]
         path.save(self.video_path)
 
     def set_picture_path(self, path):
@@ -55,7 +59,7 @@ class Object(SqlAlchemyBase, UserMixin, SerializerMixin):
         self.picture_path = os.path.join(
             app.config[
                 'UPLOAD_FOLDER']
-        ) + 'img/' + self.__hash__ + path.filename[-4:]
+        ) + 'img/' + self.__hash__() + path.filename[-4:]
         path.save(self.picture_path)
 
     def set_paths(self, video_path, picture_path):

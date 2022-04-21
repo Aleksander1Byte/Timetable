@@ -23,8 +23,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 global_init('db/database.db')
 
-types = {1: 'Памятник', 2: 'Ансамбль', 3: 'Достопримечательное место'}
-meanings = {1: 'Местное', 2: 'Региональное', 3: 'Федеральное'}
+types = {1: 'памятником', 2: 'ансамблем', 3: 'достопримечательным местом'}
+meanings = {1: 'местного', 2: 'регионального', 3: 'федерального'}
 
 DEBUG = True
 
@@ -36,6 +36,25 @@ def main():
 
     return render_template('main_page.html', title='Timetable',
                            current_user=current_user, objects=objects)
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    db_sess = create_session()
+    query = request.args.get("search_query")
+    obj = db_sess.query(Object).filter(
+        Object.name.like(f'%{query}%')).first()
+    return redirect(f'/obj/{obj.id}')
+
+
+@app.route('/obj/<int:id>')
+def view_object(id):
+    db_sess = create_session()
+    obj = db_sess.query(Object).get(id)
+    context = {
+        'obj': obj
+    }
+    return render_template('view_object.html', current_user=current_user, **context)
 
 
 @login_required
