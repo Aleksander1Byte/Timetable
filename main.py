@@ -1,10 +1,11 @@
 import os.path
 
 from sqlalchemy.exc import IntegrityError
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
 from werkzeug.utils import redirect
+import requests
 
 from data.db_session import create_session, global_init
 from data.forms.LoginForm import LoginForm
@@ -12,6 +13,7 @@ from data.forms.RegisterForm import RegisterForm
 from data.meaning import Type, Meaning
 from data.users import User
 from data.objects import Object
+import data.forms.NewObjectForm as nof
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -21,6 +23,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 global_init('db/database.db')
 
+types = {1: 'Памятник', 2: 'Ансамбль', 3: 'Достопримечательное место'}
+meanings = {1: 'Местное', 2: 'Региональное', 3: 'Федеральное'}
+
 DEBUG = True
 
 
@@ -28,6 +33,34 @@ DEBUG = True
 def main():
     return render_template('main_page.html', title='Timetable',
                            current_user=current_user)
+
+
+@login_required
+@app.route('/add', methods=['GET', 'POST'])
+def add_object():
+    form = nof.NewObjectForm()
+    if form.validate_on_submit():
+        video = request.files[
+            'video'] if 'video' in request.files else None
+        picture = request.files[
+            'picture'] if 'picture' in request.files else None
+        db_sess = create_session()
+        obj = Object(
+            name=form.name.data,
+            description=form.description.data,
+            region_id=form.region_id.data,
+            meaning_id=form.meaning_id.data,
+            type_id=form.type_id.data,
+            is_unesco=form.is_unesco.data
+        )
+
+        obj.set_paths(video, picture)
+
+        db_sess.add(obj)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('new_object.html', title='Timetable - upload',
+                           current_user=current_user, form=form)
 
 
 @login_manager.user_loader
@@ -90,8 +123,6 @@ def register():
 
 
 def setup_db():
-    types = {1: 'Памятник', 2: 'Ансамбль', 3: 'Достопримечательное место'}
-    meanings = {1: 'Местное', 2: 'Региональное', 3: 'Федеральное'}
     db_sess = create_session()
     try:
         for key_t in types:

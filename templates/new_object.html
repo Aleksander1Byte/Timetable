@@ -1,0 +1,86 @@
+{% extends "index.html" %}
+
+{% block content %}
+<form action="" method="POST" class="form" enctype=multipart/form-data>
+    <h1>Загрузить объект</h1>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.region_id.label }}<br>
+        {{ form.region_id(class="form-control") }}<br>
+        {% for error in form.region_id.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.meaning_id.label }}<br>
+        {{ form.meaning_id(class="form-control") }}<br>
+        {% for error in form.meaning_id.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.type_id.label }}<br>
+        {{ form.type_id(class="form-control") }}<br>
+        {% for error in form.type_id.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>{{ form.is_unesco() }} {{ form.is_unesco.label }}</p>
+
+    <p>
+        {{ form.description.label }}<br>
+        {{ form.description(class="form-control") }}<br>
+        {% for error in form.description.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+        <div class="form-group">
+        <p>
+            {{ form.picture.label }}<br>
+            <input type="file" class="form-control-file" id="picture" name="picture">
+            {% for error in form.picture.errors %}
+        <p class="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        </p>
+    </div>
+
+    <div class="form-group">
+        <p>
+            {{ form.video.label }}<br>
+            <input type="file" class="form-control-file" id="video" name="video">
+            {% for error in form.video.errors %}
+        <p class="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+        {% endfor %}
+        </p>
+    </div>
+
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
+{% endblock %}
