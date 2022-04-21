@@ -28,7 +28,7 @@ class ObjectsResource(Resource):
         abort_if_object_not_found(object_id)
         db_sess = create_session()
         obj = db_sess.query(Object).get(object_id)
-        if obj.picture_path:
+        if obj.picture_path != 'static/media/img/default_pic.png':
             os.remove(obj.picture_path)
         if obj.video_path:
             os.remove(obj.video_path)

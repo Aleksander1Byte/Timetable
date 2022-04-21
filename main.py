@@ -52,6 +52,7 @@ def admin_only(func):
         if not current_user.is_admin:
             abort(405)
         return func(*args, **kwargs)
+
     return check
 
 
@@ -123,6 +124,40 @@ def view_object(id):
 
     return render_template('view_object.html', current_user=current_user,
                            **context)
+
+
+@app.route('/obj/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_only
+def edit_object(id):
+    db_sess = create_session()
+    obj = db_sess.query(Object).get(id)
+    form = nof.NewObjectForm()
+    form.name.data = obj.name
+    form.region_id.data = obj.region_id
+    form.description.data = obj.description
+    if form.validate_on_submit():
+        delete(f'http://{ADDRESS}/api/objects/{id}')
+        video = request.files[
+            'video'] if 'video' in request.files else None
+        picture = request.files[
+            'picture'] if 'picture' in request.files else None
+        db_sess = create_session()
+        obj = Object(
+            id=id,
+            name=form.name.data,
+            description=form.description.data.capitalize(),
+            region_id=form.region_id.data,
+            meaning_id=form.meaning_id.data,
+            type_id=form.type_id.data,
+            is_unesco=form.is_unesco.data
+        )
+        obj.set_paths(video, picture)
+        db_sess.add(obj)
+        db_sess.commit()
+        return redirect(f'/obj/{id}')
+    return render_template('new_object.html', title='Timetable - edit',
+                           current_user=current_user, form=form)
 
 
 @app.route('/add', methods=['GET', 'POST'])
