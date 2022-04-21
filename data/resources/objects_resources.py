@@ -52,6 +52,8 @@ class ObjectsListResource(Resource):
         session = create_session()
         if session.query(Object).filter(Object.id == args['id']).first():
             return jsonify({'error': 'Object with that id already exists'})
+        video = args['video'] if 'video' in args else None
+        picture = args['picture'] if 'picture' in args else None
         object = Object(
             id=args['id'],
             name=args['name'],
@@ -59,10 +61,9 @@ class ObjectsListResource(Resource):
             meaning_id=args['meaning_id'],
             type_id=args['type_id'],
             is_unesco=args['is_unesco'],
-            description=args['description'],
-            video_path=args['video_path'],
-            picture_path=args['picture_path']
+            description=args['description']
         )
+        object.set_paths(video, picture)
         session.add(object)
         session.commit()
         return jsonify({'success': 'OK'})
