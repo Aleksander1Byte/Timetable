@@ -104,6 +104,9 @@ def delete_object(id):
 def view_object(id):
     db_sess = create_session()
     obj = db_sess.query(Object).get(id)
+    if obj is None:
+        abort(404)
+        return
     context = {
         'obj': obj
     }
