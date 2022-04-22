@@ -3,8 +3,8 @@ from flask_restful import Resource, abort
 
 from data.comments import Comments
 from data.db_session import create_session
-from data.reg_parse_object import parser
 from data.objects import Object
+from data.reg_parse_object import parser
 
 
 def abort_if_object_not_found(object_id):

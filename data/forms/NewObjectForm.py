@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import FileField, StringField, SubmitField, TextAreaField, \
-    BooleanField, IntegerField, SelectField
+from wtforms import (BooleanField, FileField, IntegerField, SelectField,
+                     StringField, SubmitField, TextAreaField)
 from wtforms.validators import DataRequired, Length, NumberRange
 
 
 class NewObjectForm(FlaskForm):
-    from main import types, meanings
+    from main import meanings, types
     name = StringField('Название',
                        validators=[DataRequired(), Length(max=300)])
     region_id = IntegerField('Номер региона расположения',

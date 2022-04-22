@@ -1,23 +1,23 @@
 import os.path
 from functools import wraps
+from random import shuffle
 
-from flask_restful import Api
-from requests import delete
-from sqlalchemy.exc import IntegrityError
 from flask import Flask, render_template, request
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
+from flask_restful import Api
+from requests import delete
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
+import data.forms.NewObjectForm as nof
 from data.db_session import global_init
 from data.forms.LoginForm import LoginForm
 from data.forms.RegisterForm import RegisterForm
-from data.meaning import Type, Meaning
-from data.users import User
-import data.forms.NewObjectForm as nof
+from data.meaning import Meaning, Type
 from data.resources.objects_resources import *
-from random import shuffle
+from data.users import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
