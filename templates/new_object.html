@@ -2,7 +2,7 @@
 
 {% block content %}
 <form action="" method="POST" class="form" enctype=multipart/form-data>
-    <h1>Загрузить объект</h1>
+    <h1 style="padding-top: 1vh;">Загрузить объект</h1>
     {{ form.hidden_tag() }}
     <p>
         {{ form.name.label }}<br>
@@ -25,7 +25,7 @@
     </p>
 
     <p>
-        {{ form.meaning_id.label }}<br>
+        {{ form.meaning_id.label }}{% if obj %};<i> Предыдущее значение: <b>{{obj.meaning_id}}</b></i>{%endif%}<br>
         {{ form.meaning_id(class="form-control") }}<br>
         {% for error in form.meaning_id.errors %}
     <p class="alert alert-danger" role="alert">
@@ -35,7 +35,7 @@
     </p>
 
     <p>
-        {{ form.type_id.label }}<br>
+        {{ form.type_id.label }}{% if obj %};<i> Предыдущее значение: <b>{{obj.type_id}}</b></i> {%endif%}<br>
         {{ form.type_id(class="form-control") }}<br>
         {% for error in form.type_id.errors %}
     <p class="alert alert-danger" role="alert">

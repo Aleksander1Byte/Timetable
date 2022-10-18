@@ -4,30 +4,26 @@
 
 <section>
     <div class="container">
-        {% for obj in objects %}
-        {% if loop.index0 % 4 == 0 %}
-        <div class="row">
-            {% endif %}
+        <div class="row justify-content-start">
+            {% for obj in objects %}
             <div class="col">
-                <div class="card" style="width: 18rem; height: 24rem;">
+                <div class="card">
                     <img src="{{ obj.picture_path }}" class="card-img-top" alt="{{ obj.name }}">
                     <div class="card-body">
                         <h5 class="card-title"> {{ obj.name }}</h5>
                         <p class="card-text">{{ obj.description|truncate(100) }}</p>
-                        <a href="obj/{{obj.id}}" class="btn btn-primary" style="position: absolute;bottom: 10px;">Узнать
+                        <a href="obj/{{obj.id}}" class="btn btn-primary more_info">Узнать
                             подробнее</a>
                         {% if current_user.is_admin %}
-                        <a href="obj/delete/{{obj.id}}" class="btn btn-danger"
-                           style="position: absolute;bottom: 10px; right: 10px;">Удалить</a>
+                        <a href="obj/delete/{{obj.id}}" class="btn btn-danger delete">Удалить</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            {% if loop.index0 % 4 == 3 %}
+            {% endfor %}
         </div>
-        {% endif %}
-        {% endfor %}
     </div>
+    <img src="static/img/kremlin.png" class="image_main_page">
 </section>
 
 

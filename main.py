@@ -142,6 +142,7 @@ def edit_object(id):
         form.name.data = obj.name
         form.region_id.data = obj.region_id
         form.description.data = obj.description
+        form.is_unesco.data = obj.is_unesco
     if form.validate_on_submit():
         delete(f'http://{ADDRESS}/api/objects/{id}')
         video = request.files[
@@ -163,7 +164,7 @@ def edit_object(id):
         db_sess.commit()
         return redirect(f'/obj/{id}')
     return render_template('new_object.html', title='Timetable - edit',
-                           current_user=current_user, form=form)
+                           current_user=current_user, form=form, obj=obj)
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -192,7 +193,7 @@ def add_object():
         db_sess.commit()
         return redirect('/')
     return render_template('new_object.html', title='Timetable - upload',
-                           current_user=current_user, form=form)
+                           current_user=current_user, form=form, obj=None)
 
 
 @login_manager.user_loader
